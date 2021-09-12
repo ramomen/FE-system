@@ -31,13 +31,13 @@ class WooCommerceService
         $response = Http::withHeaders($headers)->post($url,$data);
 
         
-      if($response->status() == 200) {
+      if($response->status() == 201) {
         return response($response->json(),200);
         } else {
             return response(json_encode("Something went wrong",403));
         }
     }
-    
+
     public function deleteProduct($ck,$cs,$baseUrl,$id)
     {
         $headers =[];
