@@ -22,6 +22,27 @@ class WooCommerceService
     //ck_fa9c7f67685a4912d91164b74dd6fd8750b310da
     //secret : cs_d1cbab3c3a9f81a5b7fe2b20c51e1add787877ce
 
+    /* PAYMENT */
+
+    public function allPaymentGateways($ck,$cs,$baseUrl)
+    {
+        $suffix = "wp-json/wc/v3/payment_gateways";
+        $this->get($ck,$cs,$suffix,$baseUrl);
+    }
+
+    public function storeGateway($ck,$cs,$baseUrl,$id)
+    {
+        $suffix = "wp-json/wc/v3/payment_gateways/".$id;
+        $this->get($ck,$cs,$suffix,$baseUrl);
+    }
+
+    public function updateGateway($ck,$cs,$baseUrl,$id,$data)
+    {   
+        $suffix = "/wp-json/wc/v3/payment_gateways/".$id;
+        $this->put($ck,$cs,$suffix,$baseUrl,$data);
+    }
+
+
     /* TAX RATES */
 
     public function batchTax($ck,$cs,$baseUrl,$data=[])
@@ -58,13 +79,13 @@ class WooCommerceService
 
     }
 
-    public function updateTax($ck,$cs,$baseUrl,$id)
+    public function updateTax($ck,$cs,$baseUrl,$id,$data =[])
     {
         $headers =[];
 
         $url = $baseUrl.'wp-json/wc/v3/taxes/'.$id.'?consumer_key='.$ck.'&consumer_secret='.$cs;
         
-        $response = Http::withHeaders($headers)->put($url,$data=[]);
+        $response = Http::withHeaders($headers)->put($url,$data);
 
         
       if($response->status() == 201) {
@@ -323,6 +344,23 @@ class WooCommerceService
 
 
     /* HTTP Actions */
+
+    public function put($ck,$cs,$suffix,$baseUrl,$data=[])
+    {
+        $headers =[];
+
+        $url = $baseUrl.$suffix.'?consumer_key='.$ck.'&consumer_secret='.$cs;
+
+        $response = Http::withHeaders($headers)->put($url,$data);
+
+        
+      if($response->status() == 200) {
+        return response($response->json(),200);
+        } else {
+            return response(json_encode("Something went wrong",403));
+        }
+
+    }
 
     public function post($ck,$cs,$suffix,$baseUrl,$data=[])
     {
